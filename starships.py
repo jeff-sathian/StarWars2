@@ -51,8 +51,12 @@ for ele in pilot_list: #produces api pilot values of the dictionary for each sta
     counter += 1
 pprint(pilot2[0])
 
-def generate_id:
+pilot3=[]
+for i in pilot2[0]:
+    pilot3.append(i)
 
+# def generate_id:
+print(pilot2)
 
 
 
