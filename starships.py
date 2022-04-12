@@ -10,12 +10,6 @@ db.starships.drop()
 starships=db["starships"] #creating a collection for starships
 print(db.list_collection_names())
 
-# json_return = requests.get("https://swapi.dev/api/starships/").json() #getting starships data from api
-# json_return2 = requests.get('https://swapi.dev/api/starships/?page=2').json()
-# json_return3 = requests.get('https://swapi.dev/api/starships/?page=3').json()
-# json_return4 = requests.get('https://swapi.dev/api/starships/?page=4').json() #hard coded! need to automate!
-# #pprint(json_return2)
-
 def get_data(url):
     return requests.get(url).json()
 
@@ -33,28 +27,40 @@ b=insert_data(json_return2)
 c=insert_data(json_return3)
 d=insert_data(json_return4)
 
-# for i in json_return["results"]: #adds each record into the starships collection
-#     db.starships.insert_one(i)
 print(db.list_collection_names())
 #looping through all starship pages
+#(couldnt figure out)
 
+def get_id(url): #given a pilot url will produce the id of the pilot
+    pilot = requests.get(url)
+    return pilot["_id"]
 
-starb=db.starships.find({})
-for i in starb:
-    print(i)
-
-
-char =db.characters.find({}).limit(2)
-for m in char:
-    pprint(m)
-
-
-pilots = db.starships.find({"pilots":{"$ne" : []}},{"pilots":1}) #finding all entries where pilots is not empty
+pilots = db.starships.find({"pilots":{"$ne" : []}},{"pilots":1,"_id":0}) #finding all entries where pilots is not empty
 pilot_list =[]
 for p in pilots:
     pilot_list.append(p)
-pprint(pilot_list)
+# pprint(pilot_list[0].values())
 
-#def get_id(url):
-# pilot = requests.get(url)
-#return pilot["_id"]
+#pprint(pilot_list)
+# print(pilot_list)
+counter = 0
+pilot2=[]
+for ele in pilot_list: #produces api pilot values of the dictionary for each starship
+    #pprint(pilot_list[counter].values())
+    pilot2.append(pilot_list[counter].values())
+    counter += 1
+pprint(pilot2[0])
+
+def generate_id:
+
+
+
+
+
+
+#
+# def replace_url_with_id(url):
+#     db.starships.update_one({"pilots":{"$ne":""}},{"$set":{"$pilots":get_id(url)}})
+
+
+
