@@ -31,15 +31,24 @@ print(db.list_collection_names())
 #looping through all starship pages
 #(couldnt figure out)
 
-def get_id(url): #given a pilot url will produce the id of the pilot
-    pilot = requests.get(url)
-    return pilot["_id"]
+def get_id(url): #given a pilot url will produce the name of the pilot
+    pilot = requests.get(url).json()
+    name = pilot["name"]
+    id = db.characters.find({"name": name}, {"_id":1}) #searches for pilot name in characters collection
+    ids = []
+    for ele in id:
+        ids.append(ele["_id"]) #gets information from cursor object
+    return ids[0]
+
+test = get_id('https://swapi.dev/api/people/25/')
+print(test)
 
 pilots = db.starships.find({"pilots":{"$ne" : []}},{"pilots":1,"_id":0}) #finding all entries where pilots is not empty
 pilot_list =[]
 for p in pilots:
     pilot_list.append(p)
-# pprint(pilot_list[0].values())
+pprint(list(pilot_list[0].values()))
+pprint(pilot_list[0].values())
 
 #pprint(pilot_list)
 # print(pilot_list)
@@ -47,16 +56,16 @@ counter = 0
 pilot2=[]
 for ele in pilot_list: #produces api pilot values of the dictionary for each starship
     #pprint(pilot_list[counter].values())
-    pilot2.append(pilot_list[counter].values())
+    pilot2.append(list(pilot_list[counter].values()))
     counter += 1
-pprint(pilot2[0])
+pprint(pilot2[0][0][2])
 
 pilot3=[]
 for i in pilot2[0]:
     pilot3.append(i)
 
 # def generate_id:
-print(pilot2)
+#print(pilot2)
 
 
 
