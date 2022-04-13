@@ -5,32 +5,57 @@ from pprint import pprint
 client = pymongo.MongoClient()
 db = client["starwars"]
 db.starships.drop()
-
-
 starships=db["starships"] #creating a collection for starships
-print(db.list_collection_names())
 
 def get_data(url):
-    return requests.get(url).json()
+    i = 0
+    full_data =[]
 
-json_return = get_data("https://swapi.dev/api/starships/")
-json_return2 = get_data('https://swapi.dev/api/starships/?page=2')
-json_return3 = get_data('https://swapi.dev/api/starships/?page=3')
-json_return4 = get_data('https://swapi.dev/api/starships/?page=4')
+    while True:
+        i += 1
+        info = requests.get(url + "/?page={}".format(i)).json()
+        if info['next'] == None:
+            info = requests.get(url + "/?page={}".format(i)).json()
+            for record in range(len(info['results'])):
+                full_data.append(info['results'][record])
+            break
+        else:
+            info = requests.get(url + "/?page={}".format(i)).json()
+            for record in range(len(info['results'])):
+                full_data.append(info['results'][record])
+    return full_data
+
+starships_data = get_data("https://swapi.dev/api/starships")
 
 
-def insert_data(json_file):
-    for i in json_file['results']:
-        db.starships.insert_one(i)
-a=insert_data(json_return)
-b=insert_data(json_return2)
-c=insert_data(json_return3)
-d=insert_data(json_return4)
+print(db.list_collection_names())
+#
+for i in starships_data:
+    db.starships.insert_one(i)
+# def get_data(url):
+#     return requests.get(url).json()
+#
+# json_return = get_data("https://swapi.dev/api/starships/")
+# json_return2 = get_data('https://swapi.dev/api/starships/?page=2')
+# json_return3 = get_data('https://swapi.dev/api/starships/?page=3')
+# json_return4 = get_data('https://swapi.dev/api/starships/?page=4')
+#
+#
+# def insert_data(json_file):
+#     for i in json_file['results']:
+#         db.starships.insert_one(i)
+# a=insert_data(json_return)
+# b=insert_data(json_return2)
+# c=insert_data(json_return3)
+# d=insert_data(json_return4)
 
 print(db.list_collection_names())
 #looping through all starship pages
 #(couldnt figure out)
 
+#
+# for i in starships_data:
+#     print (i)
 
 
 def get_id2(arrayofurls): #given a pilot url will produce the name of the pilot
