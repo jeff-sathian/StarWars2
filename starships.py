@@ -31,14 +31,7 @@ print(db.list_collection_names())
 #looping through all starship pages
 #(couldnt figure out)
 
-# def get_id(url): #given a pilot url will produce the name of the pilot
-#     pilot = requests.get(url).json()
-#     name = pilot["name"]
-#     id = db.characters.find({"name": name}, {"_id":1}) #searches for pilot name in characters collection
-#     ids = []
-#     for ele in id:
-#         ids.append(ele["_id"]) #gets information from cursor object
-#     return ids[0]
+
 
 def get_id2(arrayofurls): #given a pilot url will produce the name of the pilot
     arrayofids = []
@@ -54,7 +47,46 @@ def get_id2(arrayofurls): #given a pilot url will produce the name of the pilot
 
 # test = get_id2(['https://swapi.dev/api/people/10/','https://swapi.dev/api/people/58/']) #test if function works
 # print(test)
+#print(get_id2(['https://swapi.dev/api/people/13/', 'https://swapi.dev/api/people/14/', 'https://swapi.dev/api/people/25/', 'https://swapi.dev/api/people/31/']))
 
+
+stars = db.starships.find({})
+for i in stars:
+    if i['pilots'] == []:#if no pilots no ids to update
+        continue
+    else:
+        get_id2(i['pilots']) #retrieves pilots character id
+        db.starships.update_one({"pilots":i['pilots']},{"$set":{"pilots":get_id2(i['pilots'])}}) # finds pilot record that matches the for loop and updates it to the object id
+
+stars2 = db.starships.find({})
+for i in stars2: #checking if object ids were correctly updated
+    print(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Archive/ not used code:
+
+# def get_id(url): #given a pilot url will produce the name of the pilot
+#     pilot = requests.get(url).json()
+#     name = pilot["name"]
+#     id = db.characters.find({"name": name}, {"_id":1}) #searches for pilot name in characters collection
+#     ids = []
+#     for ele in id:
+#         ids.append(ele["_id"]) #gets information from cursor object
+#     return ids[0]
 
 # pilots = db.starships.find({"pilots":{"$ne" : []}},{"pilots":1,"_id":0}) #finding all entries where pilots is not empty
 # pilot_list =[]
